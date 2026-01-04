@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 export type TaskStatus = 'pending' | 'in-progress' | 'completed';
 
@@ -11,6 +12,7 @@ export interface Task {
   status: TaskStatus;
   created_at: string;
   updated_at: string;
+  user_id: string;
 }
 
 export function useTasks(statusFilter?: TaskStatus) {
@@ -18,9 +20,16 @@ export function useTasks(statusFilter?: TaskStatus) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   // Fetch tasks from API
   const fetchTasks = useCallback(async () => {
+    if (!user) {
+      setTasks([]);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
@@ -49,10 +58,12 @@ export function useTasks(statusFilter?: TaskStatus) {
     } finally {
       setLoading(false);
     }
-  }, [statusFilter, toast]);
+  }, [statusFilter, toast, user]);
 
   // Create a new task (optimistic update)
   const createTask = useCallback(async (title: string, description?: string) => {
+    if (!user) throw new Error('You must be logged in to create tasks');
+
     const tempId = `temp-${Date.now()}`;
     const optimisticTask: Task = {
       id: tempId,
@@ -61,6 +72,7 @@ export function useTasks(statusFilter?: TaskStatus) {
       status: 'pending',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      user_id: user.id,
     };
 
     // Optimistic update
@@ -69,7 +81,7 @@ export function useTasks(statusFilter?: TaskStatus) {
     try {
       const { data, error } = await supabase
         .from('tasks')
-        .insert({ title, description: description || null })
+        .insert({ title, description: description || null, user_id: user.id })
         .select()
         .single();
 
@@ -89,7 +101,7 @@ export function useTasks(statusFilter?: TaskStatus) {
       toast({ title: 'Error', description: message, variant: 'destructive' });
       throw err;
     }
-  }, [toast]);
+  }, [toast, user]);
 
   // Update task (optimistic update)
   const updateTask = useCallback(async (id: string, updates: Partial<Pick<Task, 'title' | 'description' | 'status'>>) => {
@@ -152,6 +164,12 @@ export function useTasks(statusFilter?: TaskStatus) {
 
   // Set up realtime subscription
   useEffect(() => {
+    if (!user) {
+      setTasks([]);
+      setLoading(false);
+      return;
+    }
+
     fetchTasks();
 
     const channel = supabase
@@ -162,6 +180,7 @@ export function useTasks(statusFilter?: TaskStatus) {
           event: '*',
           schema: 'public',
           table: 'tasks',
+          filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
           console.log('[Realtime] Task change:', payload);
@@ -187,7 +206,7 @@ export function useTasks(statusFilter?: TaskStatus) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [fetchTasks]);
+  }, [fetchTasks, user]);
 
   return {
     tasks,

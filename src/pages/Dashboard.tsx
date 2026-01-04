@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTasks, TaskStatus, Task } from '@/hooks/useTasks';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,9 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Trash2, Edit, CheckCircle, Clock, AlertCircle, Loader2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, Trash2, Edit, CheckCircle, Clock, AlertCircle, Loader2, LogOut } from 'lucide-react';
 
 const statusConfig: Record<TaskStatus, { label: string; color: string; icon: React.ReactNode }> = {
   pending: { label: 'Pending', color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20', icon: <AlertCircle className="h-4 w-4" /> },
@@ -18,12 +19,36 @@ const statusConfig: Record<TaskStatus, { label: string; color: string; icon: Rea
 };
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const { user, loading: authLoading, signOut } = useAuth();
   const { tasks, loading, createTask, updateTask, deleteTask } = useTasks();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
   const [filter, setFilter] = useState<TaskStatus | 'all'>('all');
+
+  // Redirect to auth if not logged in
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/auth');
+    }
+  }, [user, authLoading, navigate]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   const filteredTasks = filter === 'all' ? tasks : tasks.filter(t => t.status === filter);
 
@@ -61,11 +86,17 @@ export default function Dashboard() {
           <Link to="/" className="text-xl font-bold text-foreground">
             TaskFlow
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">
               <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
               Real-time Connected
             </Badge>
+            <span className="text-sm text-muted-foreground hidden sm:block">
+              {user.email}
+            </span>
+            <Button variant="ghost" size="icon" onClick={handleSignOut} title="Sign out">
+              <LogOut className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </header>
