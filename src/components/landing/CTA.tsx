@@ -27,16 +27,6 @@ const CTA = () => {
             Get up and running in minutes with our powerful API. 
             Real-time updates, robust storage, and beautiful UI included.
           </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button variant="hero" size="xl">
-              Launch Dashboard
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-            <Button variant="heroOutline" size="xl">
-              Read the Docs
-            </Button>
-          </div>
         </div>
       </div>
     </section>

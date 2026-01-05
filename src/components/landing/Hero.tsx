@@ -52,9 +52,6 @@ const Hero = () => {
                 <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
-            <Button variant="heroOutline" size="xl">
-              View Documentation
-            </Button>
           </div>
         </div>
 
