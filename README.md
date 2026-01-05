@@ -1,73 +1,21 @@
-# Welcome to your Lovable project
-
-## Project info
-
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
-
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+TaskFlow: Real-Time Task Management System
+A high-performance Task Management application featuring a robust RESTful API and Real-Time updates via WebSockets. Built with a modern tech stack focused on speed, type safety, and a seamless user experience. 
+Tech Stack :
+Frontend: React (Vite), TypeScript, Tailwind CSS, Shadcn UI.
+Backend: Node.js, Express.js.
+Real-time: Socket.io for live bi-directional synchronization.
+Database: PostgreSQL (managed via Supabase).
+State Management: Custom React Hooks with Optimistic UI updates.
+Key Features:
+Full CRUD: Create, read, update, and delete tasks through standard REST endpoints.
+Real-Time Sync: Changes made by one user are broadcast instantly to all other active clients using Socket.io.
+Optimistic UI: The interface updates instantly while server requests process, providing zero-latency feedback.
+Status Filtering: Dedicated views to filter tasks by pending, in-progress, or completed.
+Input Validation: Basic error handling and validation for task titles and descriptions.
+Responsive Design: Fully optimized for mobile, tablet, and desktop experiences. 
+API Reference MethodEndpointDescriptionGET/api/tasksFetch all tasksGET/api/tasks?status=pendingFilter tasks by their current statusPOST/api/tasksCreate a new taskPATCH/api/tasks/:idUpdate a task's status or detailsDELETE/api/tasks/:idRemove a task from the database Getting StartedFollow these steps to run the project locally:1. PrerequisitesNode.js (v18 or higher).An active Supabase project for the database.2. InstallationClone the repository:Bashgit clone https://github.com/your-username/task-management-rest-app.git
+cd task-management-rest-app
+Install dependencies:Bashnpm install
+3. ConfigurationCreate a .env file in the root directory and add your connection keys:Code snippetVITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+4. Running the AppStart the local development server:Bashnpm run dev.
