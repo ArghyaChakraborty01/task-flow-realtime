@@ -13,29 +13,6 @@ const Navbar = () => {
             </div>
             <span className="font-bold text-xl">TaskFlow</span>
           </div>
-
-          {/* Nav Links */}
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Features
-            </a>
-            <a href="#api" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              API
-            </a>
-            <a href="#docs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Docs
-            </a>
-          </div>
-
-          {/* CTA */}
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm">
-              Sign In
-            </Button>
-            <Button variant="default" size="sm">
-              Get Started
-            </Button>
-          </div>
         </div>
       </div>
     </nav>
